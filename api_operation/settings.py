@@ -40,9 +40,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
-    'courier',
+    'account.apps.AccountConfig'
 ]
-AUTH_USER_MODEL = 'courier.User'
+AUTH_USER_MODEL = 'account.Account'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
