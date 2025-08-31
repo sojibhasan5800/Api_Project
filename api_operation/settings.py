@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'account.apps.AccountConfig',
     'categories',
+    'cart',
 ]
 AUTH_USER_MODEL = 'account.Account'
 
@@ -147,7 +148,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
 }
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
