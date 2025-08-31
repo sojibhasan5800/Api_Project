@@ -3,13 +3,14 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import RegisterSerializer, AccountSerializer,ChangePasswordSerializer,ForgetPasswordSerializer,ResetPasswordSerializer
 from .models import Account,UserProfile
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,AllowAny
 from .serializers import UserProfileUpdateSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
 from django.conf import settings
+from rest_framework import generics, filters
 
 # ----------------- Register View -----------------
 class RegisterView(APIView):
@@ -151,3 +152,15 @@ class ResetPasswordView(APIView):
             return Response({"message": "Password reset successfully"}, status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+# ----------------- Account List User -----------------
+
+class AccountListView(generics.ListAPIView):
+    queryset = Account.objects.all().order_by('-date_joined')
+    serializer_class = AccountSerializer
+    permission_classes = [AllowAny] 
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['email', 'username', 'role']
+    ordering_fields = ['date_joined', 'email', 'username']
+    ordering = ['-date_joined']

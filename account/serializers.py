@@ -60,7 +60,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ['profile_picture', 'first_name', 'last_name','bio', 'address', 'phone_number']
-
+        read_only_fields = fields
     
     
 # ----------------- Account Serializer -----------------
@@ -97,3 +97,6 @@ class ForgetPasswordSerializer(serializers.Serializer):
 class ResetPasswordSerializer(serializers.Serializer):
     new_password = serializers.CharField(required=True, write_only=True)
     token = serializers.CharField(required=True)  # token from email
+
+
+
