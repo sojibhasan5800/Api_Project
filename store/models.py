@@ -1,5 +1,5 @@
 from django.db import models
-from categories import Category
+from categories.models import Category
 from django.urls import reverse
 from account.models import Account
 from django.db.models import Avg, Count
@@ -20,7 +20,6 @@ class Product(models.Model):
     modified_date   = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-    # যদি stock 0 হয়, তাহলে is_available False করে দাও
         if self.stock == 0:
             self.is_available = False
         else:
