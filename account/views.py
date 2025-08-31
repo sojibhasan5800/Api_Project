@@ -11,9 +11,13 @@ from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
 from django.conf import settings
 from rest_framework import generics, filters
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 # ----------------- Register View -----------------
 class RegisterView(APIView):
+
+    @swagger_auto_schema(request_body=RegisterSerializer, responses={201: AccountSerializer})
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
@@ -36,6 +40,15 @@ class RegisterView(APIView):
 
 # ----------------- Login View -----------------
 class LoginView(APIView):
+
+    @swagger_auto_schema(request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        required=['email', 'password'],
+        properties={
+            'email': openapi.Schema(type=openapi.TYPE_STRING),
+            'password': openapi.Schema(type=openapi.TYPE_STRING)
+        },
+        ), responses={200: AccountSerializer})
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
@@ -58,6 +71,8 @@ class LoginView(APIView):
 # ----------------- Profile View -----------------
 
 class UserProfileView(APIView):
+
+    @swagger_auto_schema(responses={200: AccountSerializer})
     def get(self, request, pk):
         try:
             user = Account.objects.get(pk=pk)
@@ -70,8 +85,9 @@ class UserProfileView(APIView):
 # ----------------- Profile Update -----------------
 
 class UserProfileUpdateView(APIView):
-    permission_classes = [IsAuthenticated]  # only logged-in users can access
 
+    permission_classes = [IsAuthenticated]  # only logged-in users can access
+    @swagger_auto_schema(request_body=UserProfileUpdateSerializer, responses={200: UserProfileUpdateSerializer})
     def put(self, request):
         profile = request.user.profile  # get the profile of the logged-in user
         serializer = UserProfileUpdateSerializer(profile, data=request.data, partial=True)
@@ -82,8 +98,9 @@ class UserProfileUpdateView(APIView):
     
 # ----------------- Change Password -----------------
 class ChangePasswordView(APIView):
-    permission_classes = [IsAuthenticated]
 
+    permission_classes = [IsAuthenticated]
+    @swagger_auto_schema(request_body=ChangePasswordSerializer)
     def put(self, request):
         serializer = ChangePasswordSerializer(data=request.data)
         if serializer.is_valid():
@@ -100,6 +117,8 @@ class ChangePasswordView(APIView):
 
 # ----------------- Forget Password -----------------
 class ForgetPasswordView(APIView):
+
+    @swagger_auto_schema(request_body=ForgetPasswordSerializer)
     def post(self, request):
         serializer = ForgetPasswordSerializer(data=request.data)
         if serializer.is_valid():
@@ -130,6 +149,8 @@ class ForgetPasswordView(APIView):
 
 # ----------------- Reset Password -----------------
 class ResetPasswordView(APIView):
+
+    @swagger_auto_schema(request_body=ResetPasswordSerializer)
     def post(self, request):
         serializer = ResetPasswordSerializer(data=request.data)
         if serializer.is_valid():
@@ -155,6 +176,7 @@ class ResetPasswordView(APIView):
     
 
 # ----------------- Account List User -----------------
+
 
 class AccountListView(generics.ListAPIView):
     queryset = Account.objects.all().order_by('-date_joined')

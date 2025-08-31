@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'categories',
     'cart',
     'store',
-    'order'
+    'order',
+    'drf_yasg',
 ]
 AUTH_USER_MODEL = 'account.Account'
 
