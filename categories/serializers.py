@@ -1,9 +1,8 @@
-from rest_framework import viewsets, permissions
+from rest_framework import serializers
 from .models import Category
-from .serializers import CategorySerializer
 
-class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all().order_by('id')
-    serializer_class = CategorySerializer
-    permission_classes = [permissions.AllowAny]  
-    lookup_field = 'slug' 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'category_name', 'slug', 'url', 'description', 'cat_image']
+        read_only_fields = ['id']
