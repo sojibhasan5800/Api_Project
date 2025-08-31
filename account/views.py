@@ -9,6 +9,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
+from django.conf import settings
 
 # ----------------- Register View -----------------
 class RegisterView(APIView):
@@ -111,12 +112,13 @@ class ForgetPasswordView(APIView):
             token = get_random_string(50)
             user.profile.reset_password_token = token
             user.profile.save()
+            from_email = settings.EMAIL_HOST_USER 
 
             reset_link = f"http://your-frontend-domain/reset-password/?token={token}"
             send_mail(
                 'Reset Your Password',
                 f'Click the link to reset your password: {reset_link}',
-                'your_gmail@gmail.com',
+                from_email,
                 [email],
                 fail_silently=False,
             )
