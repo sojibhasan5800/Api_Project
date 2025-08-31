@@ -1,7 +1,7 @@
 from django.db import models
-from category.models import Category
+from categories import Category
 from django.urls import reverse
-from accounts.models import Account
+from account.models import Account
 from django.db.models import Avg, Count
 from cloudinary.models import CloudinaryField
 
@@ -97,5 +97,3 @@ class ProductGallery(models.Model):
     class Meta:
         verbose_name = 'productgallery'
         verbose_name_plural = 'product gallery'
-
- 
