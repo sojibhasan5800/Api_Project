@@ -1,12 +1,11 @@
 from rest_framework import serializers
 from .models import Account, UserProfile
 from django.contrib.auth import authenticate
+from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
 
-class UserProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserProfile
-        fields = ['profile_picture', 'first_name', 'last_name','bio', 'address', 'phone_number']
 
+# ----------------- Register Serializer -----------------
 
 class RegisterSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True)
@@ -32,7 +31,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             password=password,
         )
         return user
-
+    
+# ----------------- LoginS erializer -----------------
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -52,6 +52,19 @@ class LoginSerializer(serializers.Serializer):
         data['user'] = user
         return data
     
+
+
+# ----------------- UserProfile Serializer -----------------
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ['profile_picture', 'first_name', 'last_name','bio', 'address', 'phone_number']
+
+    
+    
+# ----------------- Account Serializer -----------------
+
 class AccountSerializer(serializers.ModelSerializer):
     profile = UserProfileSerializer(read_only=True)
 
@@ -59,8 +72,28 @@ class AccountSerializer(serializers.ModelSerializer):
         model = Account
         fields = ['id', 'email', 'username',  'role', 'profile']
 
+# ----------------- UserProfileUpdate Serializer -----------------
 
 class UserProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ['profile_picture', 'bio', 'address', 'phone_number','first_name', 'last_name']
+
+
+# ----------------- Change Password Serializer -----------------
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True, write_only=True)
+    new_password = serializers.CharField(required=True, write_only=True)
+
+    def validate_new_password(self, value):
+        validate_password(value)
+        return value
+
+# ----------------- Forget Password Serializer -----------------
+class ForgetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+# ----------------- Reset Password Serializer -----------------
+class ResetPasswordSerializer(serializers.Serializer):
+    new_password = serializers.CharField(required=True, write_only=True)
+    token = serializers.CharField(required=True)  # token from email
