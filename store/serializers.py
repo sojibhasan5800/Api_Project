@@ -12,6 +12,7 @@ class VariationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Variation
         fields = ['id', 'variation_category', 'variation_value', 'is_active']
+        # ref_name = 'StoreVariationSerializers'
         ref_name = 'StoreVariationSerializer'
 
 # ---------------- Review ----------------
