@@ -1,5 +1,7 @@
 from django.contrib import admin
 from .models import Cart, CartItem
+from store.models import Product
+from account.models import Account
 
 # ---------------- CartItem Inline ----------------
 class CartItemInline(admin.TabularInline):
@@ -29,3 +31,10 @@ class CartItemAdmin(admin.ModelAdmin):
     autocomplete_fields = ['product', 'user', 'cart']
     filter_horizontal = ('variations',)
     readonly_fields = ('sub_total',)
+
+# ---------------- Product Admin ----------------
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    search_fields = ['product_name']
+
+
