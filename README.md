@@ -4,20 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>API Operation Project</title>
-<style>
-  body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; background-color: #f9f9f9; }
-  h1, h2, h3 { color: #2c3e50; }
-  h1 { font-size: 2em; margin-bottom: 10px; }
-  h2 { font-size: 1.5em; margin-top: 30px; }
-  h3 { font-size: 1.2em; margin-top: 20px; }
-  code { background: #ecf0f1; padding: 2px 6px; border-radius: 4px; }
-  pre { background: #ecf0f1; padding: 10px; border-radius: 5px; overflow-x: auto; }
-  table { border-collapse: collapse; width: 100%; margin-top: 10px; }
-  th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-  th { background-color: #3498db; color: white; }
-  a { color: #2980b9; text-decoration: none; }
-  a:hover { text-decoration: underline; }
-</style>
 </head>
 <body>
 
