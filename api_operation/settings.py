@@ -170,3 +170,22 @@ SIMPLE_JWT = {
     # optional cookie settings if you choose cookie approach:
     # 'AUTH_COOKIE': 'jwt', 'AUTH_COOKIE_SECURE': True, ...
 }
+
+AUTHENTICATION_BACKENDS = [
+    'account.auth_backends.EmailBackend',   # custom backend
+    'django.contrib.auth.backends.ModelBackend',  # keep default
+]
+
+# settings.py
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {
+            "type": "apiKey",
+            "description": "JWT Authorization header using the Bearer scheme. Example: 'Bearer <your_access_token>'",
+            "name": "Authorization",
+            "in": "header",
+        }
+    },
+    "USE_SESSION_AUTH": False,  # optional, শুধু JWT use করলে session auth বন্ধ করা ভালো
+}
