@@ -1,71 +1,102 @@
-from rest_framework import generics, permissions
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, generics, filters
 from .models import Product, Variation, ReviewRating, ProductGallery
 from .serializers import ProductSerializer, VariationSerializer, ReviewRatingSerializer, ProductGallerySerializer
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
-# ---------------- Product Views ----------------
+# ----------------- Products -----------------
 class ProductListView(generics.ListAPIView):
-    queryset = Product.objects.filter(is_available=True)
-    serializer_class = ProductSerializer
-    permission_classes = [permissions.AllowAny]
-
-class ProductDetailView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    lookup_field = 'slug'
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [AllowAny]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['product_name', 'category__name']
+    ordering_fields = ['price', 'created_date', 'stock']
+    ordering = ['-created_date']
 
-class ProductCreateView(generics.CreateAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-    permission_classes = [permissions.IsAdminUser]
+    @swagger_auto_schema(
+        operation_description="List all products with details, variations, reviews, and gallery.",
+        tags=['Products']
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
-class ProductUpdateView(generics.UpdateAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-    lookup_field = 'slug'
-    permission_classes = [permissions.IsAdminUser]
 
-class ProductDeleteView(generics.DestroyAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-    lookup_field = 'slug'
-    permission_classes = [permissions.IsAdminUser]
+class ProductDetailView(APIView):
+    permission_classes = [AllowAny]
 
-# ---------------- Variation ----------------
+    @swagger_auto_schema(
+        operation_description="Retrieve product details by slug.",
+        tags=['Products'],
+        responses={200: ProductSerializer}
+    )
+    def get(self, request, slug):
+        try:
+            product = Product.objects.get(slug=slug)
+        except Product.DoesNotExist:
+            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = ProductSerializer(product)
+        return Response(serializer.data)
+
+
+# ----------------- Variations -----------------
 class VariationListView(generics.ListAPIView):
     serializer_class = VariationSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [AllowAny]
 
+    @swagger_auto_schema(
+        operation_description="List all variations (color, size) for a specific product.",
+        tags=['Variations']
+    )
     def get_queryset(self):
         product_id = self.kwargs['product_id']
-        return Variation.objects.filter(product_id=product_id, is_active=True)
+        return Variation.objects.filter(product_id=product_id)
 
-# ---------------- Review ----------------
-class ReviewCreateView(generics.CreateAPIView):
-    serializer_class = ReviewRatingSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
-    def perform_create(self, serializer):
-        product_id = self.kwargs['product_id']
-        serializer.save(user=self.request.user, product_id=product_id)
-
+# ----------------- Reviews -----------------
 class ReviewListView(generics.ListAPIView):
     serializer_class = ReviewRatingSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [AllowAny]
 
+    @swagger_auto_schema(
+        operation_description="List all reviews for a specific product.",
+        tags=['Reviews']
+    )
     def get_queryset(self):
         product_id = self.kwargs['product_id']
         return ReviewRating.objects.filter(product_id=product_id, status=True)
 
-# ---------------- Product Gallery ----------------
-class ProductGalleryView(generics.ListCreateAPIView):
-    serializer_class = ProductGallerySerializer
-    permission_classes = [permissions.IsAdminUser]
 
+class ReviewCreateView(generics.CreateAPIView):
+    serializer_class = ReviewRatingSerializer
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_description="Create a review for a product (Authenticated user only).",
+        tags=['Reviews'],
+        security=[{'Bearer': []}],
+        responses={201: ReviewRatingSerializer}
+    )
+    def post(self, request, product_id):
+        serializer = ReviewRatingSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user, product_id=product_id)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# ----------------- Product Gallery -----------------
+class ProductGalleryView(generics.ListAPIView):
+    serializer_class = ProductGallerySerializer
+    permission_classes = [AllowAny]
+
+    @swagger_auto_schema(
+        operation_description="List all gallery images for a specific product.",
+        tags=['Gallery']
+    )
     def get_queryset(self):
         product_id = self.kwargs['product_id']
         return ProductGallery.objects.filter(product_id=product_id)
-
-    def perform_create(self, serializer):
-        product_id = self.kwargs['product_id']
-        serializer.save(product_id=product_id)

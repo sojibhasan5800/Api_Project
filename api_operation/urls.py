@@ -24,7 +24,7 @@ from drf_yasg import openapi
 from rest_framework_simplejwt.authentication import JWTAuthentication
 schema_view = get_schema_view(
    openapi.Info(
-      title="Courier & E-commerce API",
+      title="Courier & Flip_Cart E-commerce API",
       default_version='v1',
       description="API documentation for User, Profile, Order, Payment, Delivery system",
       terms_of_service="https://www.yourcompany.com/terms/",
