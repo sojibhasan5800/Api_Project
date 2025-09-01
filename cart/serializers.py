@@ -7,13 +7,17 @@ from account.models import Account
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['id', 'name', 'price', 'description']
+        fields = ['id', 'product_name', 'price', 'description']
+        ref_name = 'CartProductSerializer'
 
 # Variation Serializer
 class VariationSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='variation_category', read_only=True)
+    value = serializers.CharField(source='variation_value', read_only=True)
     class Meta:
         model = Variation
         fields = ['id', 'name', 'value']
+        ref_name = 'CartVariationSerializer' 
 
 # CartItem Serializer
 class CartItemSerializer(serializers.ModelSerializer):
