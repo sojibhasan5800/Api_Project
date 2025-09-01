@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>API Operation Project</title>
+
 </head>
 <body>
 
 <h1>API Operation Project</h1>
-<p><strong>Courier & E-commerce API</strong> - Full-featured Django REST API with JWT authentication, product, cart, order, and delivery management.</p>
+<p><strong>Courier & Flip_Cart E-commerce API</strong> - Full-featured Django REST API with JWT authentication, product, cart, order, and delivery management.</p>
 
 <h2>🌟 Key Features</h2>
 <ul>
