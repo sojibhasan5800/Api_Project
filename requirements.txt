@@ -1,8 +1,8 @@
-Django==5.2.5
-djangorestframework==3.20.0
-djangorestframework-simplejwt==6.2.0
-drf-yasg==1.22.4
-django-cors-headers==4.5.0
-python-decouple==3.8
-cloudinary==1.32.0
-Pillow==10.1.0
+Django
+djangorestframework
+djangorestframework-simplejwt
+drf-yasg
+django-cors-headers
+python-decouple
+cloudinary
+Pillow
